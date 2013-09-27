@@ -1,0 +1,42 @@
+  #include <sys/ioctl.h>
+  #include <err.h>
+  #include <fcntl.h>
+  #include <limits.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <unistd.h>
+
+  #define BUFFLEN 50
+  char buf[BUFFLEN];
+
+  #define S_LOWERCASE     _IOR('S',1,char[BUFFLEN])
+  #define S_UPPERCASE     _IOR('S',2,char[BUFFLEN])
+
+  int msg;
+
+  main(int argc, char *argv[])
+  {
+        int i;
+        char *p;
+        if((msg=open("/dev/string",O_RDONLY))<0){
+                perror("/dev/string");
+                return (0);
+        }
+        pid_t pr=fork();
+        if(pr==0)
+        {
+                if((msg=open("/dev/string",O_RDONLY))<0){
+                        perror("/dev/string");
+                        return (0);
+                }
+        }
+                i = ioctl(msg, S_LOWERCASE, buf);
+                if (i < 0 ){
+                        err(1, "ioctl(/dev/echo)");
+
+                }
+                printf("%s \n",buf);
+                close (msg);
+        return (0);
+  }
+

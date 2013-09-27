@@ -1,0 +1,24 @@
+#include <sys/types.h>
+#include <fcntl.h>
+#include <stdio.h>
+
+#define BUFFLEN 50
+char buf[BUFFLEN];
+int msg;
+
+int  main(){
+        if((msg=open("/dev/string",O_RDONLY))<0){
+                perror("/dev/string");
+                return (0);
+
+        }
+        if(write(msg,"amanbuf",BUFFLEN)<=0){
+                perror("write");
+                return(0);
+        }
+        if(read(msg,buf,BUFFLEN)<=0){
+                perror("read");
+                return(0);
+        }
+printf("%s\n",buf);
+return(0);
